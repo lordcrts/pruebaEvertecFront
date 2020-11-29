@@ -1,0 +1,226 @@
+<!-- Crear usuario -->
+<div *ngIf="element.tipo === 'crear' || element.tipo === 'editar'">
+  <form [formGroup]="form" (ngSubmit)="element.tipo === 'crear' ? registerSubmit() : updateSubmit()">
+    <div class="row">
+      <div class="col-12" *ngIf="element.tipo === 'crear'">
+        <mat-form-field appearance="outline">
+          <mat-label>Username</mat-label>
+          <input type="text" matInput placeholder="Username" formControlName="username">
+          <mat-error *ngFor="let error of objToArray(username.errors)">
+            <div [ngSwitch]="error">
+              <ng-template [ngSwitchCase]="'maxlength'">
+                Maximo 10 caracteres.
+              </ng-template>
+              <ng-template [ngSwitchCase]="'required'">
+                Requerido
+              </ng-template>
+              <ng-template ngSwitchDefault>
+                {{error}}
+              </ng-template>
+            </div>
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="col-12" *ngIf="element.tipo === 'crear'">
+        <mat-form-field appearance="outline">
+          <mat-label>Password</mat-label>
+          <input type="password" matInput placeholder="Password" formControlName="password">
+          <mat-error *ngFor="let error of objToArray(password.errors)">
+            <div [ngSwitch]="error">
+              <ng-template [ngSwitchCase]="'required'">
+                Requerido
+              </ng-template>
+              <ng-template [ngSwitchCase]="'minlength'">
+                Minimo 8 caracteres.
+              </ng-template>
+              <ng-template [ngSwitchCase]="'maxlength'">
+                Maximo 15 caracteres.
+              </ng-template>
+              <ng-template ngSwitchDefault>
+                {{error}}
+              </ng-template>
+            </div>
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="col-12">
+        <mat-form-field appearance="outline">
+          <mat-label>Nombres</mat-label>
+          <input matInput placeholder="Nombres" formControlName="first_name">
+          <mat-error *ngFor="let error of objToArray(first_name.errors)">
+            <div [ngSwitch]="error">
+              <ng-template [ngSwitchCase]="'required'">
+                Requerido
+              </ng-template>
+              <ng-template [ngSwitchCase]="'maxlength'">
+                Maximo 30 caracteres.
+              </ng-template>
+              <ng-template ngSwitchDefault>
+                {{error}}
+              </ng-template>
+            </div>
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="col-12">
+        <mat-form-field appearance="outline">
+          <mat-label>Apellidos</mat-label>
+          <input matInput placeholder="Apellidos" formControlName="last_name">
+          <mat-error *ngFor="let error of objToArray(last_name.errors)">
+            <div [ngSwitch]="error">
+              <ng-template [ngSwitchCase]="'required'">
+                Requerido
+              </ng-template>
+              <ng-template [ngSwitchCase]="'maxlength'">
+                Maximo 30 caracteres.
+              </ng-template>
+              <ng-template ngSwitchDefault>
+                {{error}}
+              </ng-template>
+            </div>
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="col-12">
+        <mat-form-field appearance="outline">
+          <mat-label>Seleccionar estado civil</mat-label>
+          <mat-select formControlName="marital_status">
+            <mat-option value="1">Casado</mat-option>
+            <mat-option value="2">Soltero</mat-option>
+          </mat-select>
+          <mat-error *ngFor="let error of objToArray(marital_status.errors)">
+            <div [ngSwitch]="error">
+              <ng-template [ngSwitchCase]="'required'">
+                Requerido
+              </ng-template>
+              <ng-template ngSwitchDefault>
+                {{error}}
+              </ng-template>
+            </div>
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="col-12">
+        <label id="example-radio-group-label">¿Tienes hermanos?</label>
+        <mat-radio-group class="radio-group" formControlName="siblings">
+          <mat-radio-button class="radio-button" value=true>
+            Si
+          </mat-radio-button>
+          <mat-radio-button class="radio-button" value=false>
+            No
+          </mat-radio-button>
+        </mat-radio-group>
+        <mat-error *ngFor="let error of objToArray(siblings.errors)">
+          <div [ngSwitch]="error">
+            <ng-template ngSwitchDefault>
+              {{error}}
+            </ng-template>
+          </div>
+        </mat-error>
+      </div>
+
+      <div class="col-12">
+        <mat-form-field appearance="outline">
+          <mat-label>Fecha de nacimiento</mat-label>
+          <input matInput [matDatepicker]="fechaNacimiento" (focus)="fechaNacimiento.open()"
+            (click)="fechaNacimiento.open()" formControlName="birthday" required>
+          <mat-datepicker-toggle matPrefix [for]="fechaNacimiento">
+          </mat-datepicker-toggle>
+          <mat-datepicker startView="year" #fechaNacimiento>
+          </mat-datepicker>
+          <mat-error *ngFor="let error of objToArray(birthday.errors)">
+            <div [ngSwitch]="error">
+              <ng-template [ngSwitchCase]="'matDatepickerParse'">
+                Ingrese una fecha valida.
+              </ng-template>
+              <ng-template ngSwitchDefault>
+                {{error}}
+              </ng-template>
+            </div>
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div class="col-12 mt-5">
+        <label class="custom-file-upload">
+          <input type="file" (change)="fileChangeEvent($event)" />
+          {{element.tipo === 'crear' ? 'Subir foto' : 'Actualizar foto'}}
+        </label>
+        <image-cropper *ngIf="element.tipo === 'crear'" [imageChangedEvent]="imageChangedEvent" [maintainAspectRatio]="true" [aspectRatio]="4 / 3"
+          format="png" (imageCropped)="imageCropped($event)" (imageLoaded)="imageLoaded()" 
+          (cropperReady)="cropperReady()" (loadImageFailed)="loadImageFailed()"></image-cropper>
+
+          <image-cropper *ngIf="element.tipo === 'editar'" [imageChangedEvent]="imageChangedEvent" [maintainAspectRatio]="true" [aspectRatio]="4 / 3"
+          format="png" (imageCropped)="imageCropped($event)" (imageLoaded)="imageLoaded()" [imageURL]="element?.element?.userprofile?.cover_photo"
+          (cropperReady)="cropperReady()" (loadImageFailed)="loadImageFailed()"></image-cropper>
+        <mat-error *ngIf="!photo">
+          required
+        </mat-error>
+      </div>
+
+    </div>
+
+    <div class="row">
+      <div class="col">
+        <div class="col-md-12">
+          <button class="col-md-12" type="button" (click)="dialogRef.close()" mat-raised-button color="primary">Cancelar</button>
+        </div>
+      </div>
+      <div class="col" *ngIf="element.tipo === 'crear' || element.tipo === 'editar'">
+        <div class="col-md-12">
+          <button class="col-md-12" type="submit" mat-raised-button color="accent"
+            [disabled]="form.invalid || !photo || submit">{{element.tipo === 'crear' ? 'Crear' : 'Editar'}}</button>
+        </div>
+      </div>
+    </div>
+
+  </form>
+</div>
+
+<!-- Ver usuario -->
+<div *ngIf="element.tipo === 'ver'">
+  <div>
+    <div class="text-center">
+      <img [src]="element?.element?.userprofile?.cover_photo">
+    </div>
+    <p><strong>Usuario:</strong> {{element?.element?.username}}</p>
+    <p><strong>Nombre:</strong> {{element?.element?.first_name}}</p>
+    <p><strong>Apellidos:</strong> {{element?.element?.last_name}}</p>
+    <p><strong>Fecha de nacimiento:</strong> {{element?.element?.userprofile?.birthday | date:'dd / LL / yyyy' }}</p>
+    <p><strong>Estado civil:</strong> {{element?.element?.userprofile?.marital_status === 1 ? 'Casado' : 'Soltero'}}</p>
+    <p><strong>¿Hermanos?:</strong> {{element?.element?.userprofile?.siblings ? 'Si' : 'No' }}</p>
+  </div>
+    <div class="button">
+      <button type="button" (click)="dialogRef.close()" mat-raised-button color="primary">Aceptar</button>
+    </div>
+</div>
+
+<!-- Eliminar usuario -->
+<!-- Ver usuario -->
+<div *ngIf="element.tipo === 'eliminar'">
+  <div>
+    <div class="text-center">
+      <img [src]="element?.element?.userprofile?.cover_photo">
+    </div>
+    <div class="text-center mt-4 mb-4">
+      <p>¿Esta seguro de eliminar el <strong>Usuario:</strong> {{element?.element?.username}} ?</p>
+    </div>
+    
+  </div>
+  <div class="row">
+    <div class="col">
+      <div class="col-md-12">
+        <button class="col-md-12" type="button" (click)="dialogRef.close()" mat-raised-button color="primary">Cancelar</button>
+      </div>
+    </div>
+    <div class="col">
+      <div class="col-md-12">
+        <button class="col-md-12" type="button" (click)="delete()" mat-raised-button color="accent">Eliminar</button>
+      </div>
+    </div>
+  </div>
+</div>

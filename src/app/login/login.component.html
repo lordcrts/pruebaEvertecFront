@@ -1,0 +1,48 @@
+<div class="d-flex h-100 background">
+    <div class="container h-100 d-flex m-auto">
+        <div class="m-auto">
+            <mat-card>
+                <mat-card-title>Login</mat-card-title>
+                <mat-card-content>
+                  <form [formGroup]="form" (ngSubmit)="loginSubmit()">
+                    <p>
+                      <mat-form-field appearance="outline">
+                        <mat-label>Username</mat-label>
+                        <input type="text" matInput placeholder="Username" formControlName="username">
+                        <mat-error *ngFor="let error of objToArray(username.errors)">
+                            <div [ngSwitch]="error">
+                              <ng-template ngSwitchDefault>
+                                {{error}}
+                              </ng-template>
+                            </div>
+                          </mat-error>
+                      </mat-form-field>
+                    </p>
+              
+                    <p>
+                      <mat-form-field appearance="outline">
+                        <mat-label>Password</mat-label>
+                        <input type="password" matInput placeholder="Password" formControlName="password">
+                        <mat-error *ngFor="let error of objToArray(password.errors)">
+                            <div [ngSwitch]="error">
+                              <ng-template ngSwitchDefault>
+                                {{error}}
+                              </ng-template>
+                            </div>
+                          </mat-error>
+                      </mat-form-field>
+                    </p>
+              
+                    <div class="button">
+                      <button type="submit" mat-raised-button color="primary" [disabled]="form.invalid || submit">Login</button>
+                    </div>
+                    <div class="alert alert-warning" role="alert" *ngIf="error$ | async">
+                      Username or Password incorrect
+                    </div>
+              
+                  </form>
+                </mat-card-content>
+              </mat-card>
+        </div>
+    </div>
+</div>
